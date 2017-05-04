@@ -2,3 +2,5 @@
 /.idea/
 /target/
 /camelride.iml
+/activemq-data/
+/data/outbox/
