@@ -11,6 +11,6 @@ public class DownloadLogger implements Processor{
     @Override
     public void process(Exchange exchange) throws Exception {
         System.out.println("Downloaded file name : " +
-                exchange.getIn().getHeader("CamelFileName"));
+                exchange.getIn().getHeader("CamelFileName") + " from " + exchange.getFromEndpoint().getEndpointUri());
     }
 }
