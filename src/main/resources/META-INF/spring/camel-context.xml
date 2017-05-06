@@ -4,10 +4,37 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring
+       http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+  <bean id="jms" class="org.apache.camel.component.jms.JmsComponent">
+    <property name="connectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="vm://localhost"/>
+      </bean>
+    </property>
+  </bean>
+
+  <!--<bean id="ftpToJmsSpringExample" class="camelride.FTPToJmsSpringExample"/>-->
+  <bean id="downloadLogger" class="camelride.DownloadLogger"/>
 
   <camelContext xmlns="http://camel.apache.org/schema/spring">
+
+    <!--<routeBuilder ref="ftpToJmsSpringExample"/>-->
+
+    <!--<route>
+      <from uri="ftp://example.com/orders?username=***&amp;password=***"/>
+      <to uri="jms:incomingOrders"/>
+    </route>-->
+
+    <route>
+      <from uri="file:data/inbox?noop=true"/>
+      <process ref="downloadLogger"/>
+      <to uri="jms:queue:incomingOrders"/>
+    </route>
+
     <!-- here is a sample which processes the input files
          (leaving them in place - see the 'noop' flag)
          then performs content based routing on the message using XPath -->
@@ -25,6 +52,7 @@
         </otherwise>
       </choice>
     </route>
+
   </camelContext>
 
 </beans>

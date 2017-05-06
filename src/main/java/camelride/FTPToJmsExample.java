@@ -28,7 +28,7 @@ public class FTPToJmsExample {
                     /*from("ftp:example.com/orders?username=***&password=***")
                         .process(new FTPToJmsProcessor())
                         .to("jms:incomingOrders");*/
-                from("file:data/inbox")
+                from("file:data/inbox?noop=true")
                         .process(new FTPToJmsProcessor())
                         .to("jms:queue:incomingOrders");
             }
