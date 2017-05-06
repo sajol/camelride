@@ -40,6 +40,20 @@
       <process ref="downloadLogger"/>
     </route>
 
+    <route>
+      <from uri="jms:queue:incomingOrders"/>
+      <choice>
+        <when>
+          <simple>${header.CamelFileName} regex '^.*xml$'</simple>
+          <to uri="jms:queue:xmlOrders"/>
+        </when>
+        <when>
+          <simple>${header.CamelFileName} regex '^.*(csv|csl)$'</simple>
+          <to uri="jms:queue:csvOrders"/>
+        </when>
+      </choice>
+    </route>
+
     <!-- here is a sample which processes the input files
          (leaving them in place - see the 'noop' flag)
          then performs content based routing on the message using XPath -->

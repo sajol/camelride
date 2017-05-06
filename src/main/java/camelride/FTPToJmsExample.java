@@ -31,6 +31,22 @@ public class FTPToJmsExample {
                 from("file:data/inbox?noop=true")
                         .process(new FTPToJmsProcessor())
                         .to("jms:queue:incomingOrders");
+
+                from("jms:queue:incomingOrders")
+                        .choice()
+                        .when(header("CamelFileName").endsWith(".xml"))
+                        .to("jms:queue:xmlOrders")
+                        .when(header("CamelFileName").endsWith(".csv"))
+                        .to("jms:queue:csvOrders");
+
+                from("jms:queue:xmlOrders")
+                        .process(exchange ->
+                                System.out.println("Received XML order : " + exchange.getIn().getHeader("CamelFileName")));
+
+                from("jms:queue:csvOrders")
+                        .process(exchange ->
+                                System.out.println("Received CSV order : " + exchange.getIn().getHeader("CamelFileName")));
+
             }
         });
         context.start();
