@@ -1,5 +1,7 @@
 package camelride;
 
+import camelride.logger.order.CSVOrderLogger;
+import camelride.logger.order.XmlOrderLogger;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
@@ -40,12 +42,11 @@ public class FTPToJmsExample {
                         .to("jms:queue:csvOrders");
 
                 from("jms:queue:xmlOrders")
-                        .process(exchange ->
-                                System.out.println("Received XML order : " + exchange.getIn().getHeader("CamelFileName")));
+                        .filter(xpath("/order[not(@test)]"))
+                        .process(new XmlOrderLogger());
 
                 from("jms:queue:csvOrders")
-                        .process(exchange ->
-                                System.out.println("Received CSV order : " + exchange.getIn().getHeader("CamelFileName")));
+                        .process(new CSVOrderLogger());
 
             }
         });

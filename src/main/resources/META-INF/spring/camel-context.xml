@@ -19,6 +19,8 @@
 
   <!--<bean id="ftpToJmsSpringExample" class="camelride.FTPToJmsSpringExample"/>-->
   <bean id="downloadLogger" class="camelride.DownloadLogger"/>
+  <bean id="csvOrderLogger" class="camelride.logger.order.CSVOrderLogger"/>
+  <bean id="xmlOrderLogger" class="camelride.logger.order.XmlOrderLogger"/>
 
   <camelContext xmlns="http://camel.apache.org/schema/spring">
 
@@ -52,6 +54,19 @@
           <to uri="jms:queue:csvOrders"/>
         </when>
       </choice>
+    </route>
+    
+    <route>
+      <from uri="jms:queue:xmlOrders"/>
+      <filter>
+        <xpath>/order[not(@test)]</xpath>
+        <process ref="xmlOrderLogger"/>
+      </filter>
+    </route>
+
+    <route>
+      <from uri="jms:queue:csvOrders"/>
+      <process ref="csvOrderLogger"/>
     </route>
 
     <!-- here is a sample which processes the input files
