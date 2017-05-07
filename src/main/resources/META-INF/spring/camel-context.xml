@@ -24,6 +24,10 @@
   <bean id="accountingLogger" class="camelride.logger.order.AccountingLogger"/>
   <bean id="productionLogger" class="camelride.logger.order.ProductionLogger"/>
 
+  <!--<bean id="executor" class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+    <constructor-arg index="0" value="10"/>
+  </bean>-->
+
   <camelContext xmlns="http://camel.apache.org/schema/spring">
 
     <!--<routeBuilder ref="ftpToJmsSpringExample"/>-->
@@ -57,14 +61,16 @@
         </when>
       </choice>
     </route>
-    
+
     <route>
       <from uri="jms:queue:xmlOrders"/>
       <filter>
         <xpath>/order[not(@test)]</xpath>
         <process ref="xmlOrderLogger"/>
-        <to uri="jms:queue:accounting"/>
-        <to uri="jms:queue:production"/>
+        <multicast>
+          <to uri="jms:queue:accounting"/>
+          <to uri="jms:queue:production"/>
+        </multicast>
       </filter>
     </route>
 
