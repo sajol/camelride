@@ -79,7 +79,7 @@
       <filter>
         <xpath>/order[not(@test)]</xpath>
         <process ref="xmlOrderLogger"/>
-        <multicast executorServiceRef="executor" parallelProcessing="true">
+        <multicast executorServiceRef="executor" parallelProcessing="true" stopOnException="true">
           <to uri="jms:queue:accounting"/>
           <to uri="jms:queue:production"/>
         </multicast>

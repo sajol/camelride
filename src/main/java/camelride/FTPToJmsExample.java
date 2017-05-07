@@ -53,6 +53,7 @@ public class FTPToJmsExample {
                         .filter(xpath("/order[not(@test)]"))
                         .process(new XmlOrderLogger())
                         .multicast()
+                        .stopOnException()
                         .parallelProcessing().executorService(ParallelMultiCastExecutor.executor)
                         .to("jms:queue:accounting","jms:queue:production");*/
 
