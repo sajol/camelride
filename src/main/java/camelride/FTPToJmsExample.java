@@ -49,6 +49,14 @@ public class FTPToJmsExample {
                         .multicast()
                         .to("jms:queue:accounting","jms:queue:production");
 
+                /*from("jms:queue:xmlOrders")
+                        .filter(xpath("/order[not(@test)]"))
+                        .process(new XmlOrderLogger())
+                        .multicast()
+                        .parallelProcessing().executorService(ParallelMultiCastExecutor.executor)
+                        .to("jms:queue:accounting","jms:queue:production");*/
+
+
                 from("jms:queue:csvOrders")
                         .process(new CSVOrderLogger());
 
