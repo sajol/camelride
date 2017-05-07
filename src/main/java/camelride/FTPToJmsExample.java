@@ -1,6 +1,8 @@
 package camelride;
 
+import camelride.logger.order.AccountingLogger;
 import camelride.logger.order.CSVOrderLogger;
+import camelride.logger.order.ProductionLogger;
 import camelride.logger.order.XmlOrderLogger;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.CamelContext;
@@ -43,10 +45,18 @@ public class FTPToJmsExample {
 
                 from("jms:queue:xmlOrders")
                         .filter(xpath("/order[not(@test)]"))
-                        .process(new XmlOrderLogger());
+                        .process(new XmlOrderLogger())
+                        .multicast()
+                        .to("jms:queue:accounting","jms:queue:production");
 
                 from("jms:queue:csvOrders")
                         .process(new CSVOrderLogger());
+
+                from("jms:queue:accounting")
+                        .process(new AccountingLogger());
+
+                from("jms:queue:production")
+                        .process(new ProductionLogger());
 
             }
         });

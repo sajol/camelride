@@ -21,6 +21,8 @@
   <bean id="downloadLogger" class="camelride.DownloadLogger"/>
   <bean id="csvOrderLogger" class="camelride.logger.order.CSVOrderLogger"/>
   <bean id="xmlOrderLogger" class="camelride.logger.order.XmlOrderLogger"/>
+  <bean id="accountingLogger" class="camelride.logger.order.AccountingLogger"/>
+  <bean id="productionLogger" class="camelride.logger.order.ProductionLogger"/>
 
   <camelContext xmlns="http://camel.apache.org/schema/spring">
 
@@ -61,12 +63,24 @@
       <filter>
         <xpath>/order[not(@test)]</xpath>
         <process ref="xmlOrderLogger"/>
+        <to uri="jms:queue:accounting"/>
+        <to uri="jms:queue:production"/>
       </filter>
     </route>
 
     <route>
       <from uri="jms:queue:csvOrders"/>
       <process ref="csvOrderLogger"/>
+    </route>
+
+    <route>
+      <from uri="jms:queue:accounting"/>
+      <process ref="accountingLogger"/>
+    </route>
+
+    <route>
+      <from uri="jms:queue:production"/>
+      <process ref="productionLogger"/>
     </route>
 
     <!-- here is a sample which processes the input files
