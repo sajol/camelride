@@ -56,6 +56,40 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-quartz2</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-stream</artifactId>
+      <version>2.18.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-jackson</artifactId>
+      <version>2.18.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-jaxb</artifactId>
+      <version>2.18.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-xmljson</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>xom</groupId>
+      <artifactId>xom</artifactId>
+      <version>1.2.5</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-all</artifactId>
       <version>5.3.2</version>
@@ -125,6 +159,11 @@
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-maven-plugin</artifactId>
         <version>2.18.3</version>
+        <configuration>
+          <applicationContextUri>
+            META-INF/spring/camel-context.xml
+          </applicationContextUri>
+        </configuration>
       </plugin>
     </plugins>
   </build>
